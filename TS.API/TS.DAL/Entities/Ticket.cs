@@ -8,23 +8,18 @@ using System.Threading.Tasks;
 
 namespace TS.DAL.Entities
 {
-    public class User
+    public class Ticket
     {
-        public User()
-        {
-            Tickets = new List<Ticket>();
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         [Required]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string Description { get; set; }
 
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual User User { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace TS.DAL
             {
                 settings = new AppConfiguration();
                 opsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
-                opsBuilder.UseSqlServer(settings.ConnectionString);
+                opsBuilder.UseSqlServer(settings.ConnectionString).UseLazyLoadingProxies();
                 dbOptions = opsBuilder.Options;
             }
 
@@ -30,16 +30,6 @@ namespace TS.DAL
 
         public DbSet<User> Users { get; set; }
 
-        //AppConfiguration appConfig = new AppConfiguration();
-
-        //public DbSet<User> Users { get; set; }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //        optionsBuilder.UseSqlServer(appConfig.ConnectionString);
-
-        //    base.OnConfiguring(optionsBuilder);
-        //}
+        public DbSet<Ticket> Tickets { get; set; }
     }
 }
