@@ -29,7 +29,7 @@ namespace TS.BLL.Services
             return _userRepository.GetById(id);
         }
 
-        public bool Create(string username, string password)
+        public User Create(string username, string password)
         {
             User user = new User();
 
@@ -39,7 +39,7 @@ namespace TS.BLL.Services
             _userRepository.Insert(user);
             _userRepository.Save();
 
-            return true;
+            return user;
         }
 
         public bool Delete(int id)
@@ -51,6 +51,17 @@ namespace TS.BLL.Services
             _userRepository.Save();
 
             return true;
+        }
+
+        public int Login(string username, string password)
+        {
+            var users = GetAll();
+
+            foreach (var user in users)
+                if (user.Username == username && user.Password == password)
+                    return user.ID;
+
+            return -1;
         }
     }
 }

@@ -12,8 +12,10 @@ namespace TS.BLL.Abstractions
         List<User> GetAll();
         User GetById(int id);
 
-        bool Create(string username, string password);
+        User Create(string username, string password);
 
         bool Delete(int id);
+
+        int Login(string username, string password);
     }
 }

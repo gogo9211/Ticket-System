@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,35 @@ namespace TS.API.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost("Register"), AllowAnonymous]
+        public IActionResult Register([FromBody] UserRequestDTO registrationData)
+        {
+            var user = _userService.Create(registrationData.Username, registrationData.Password); //we need sanity checks in create later
+
+            if (user != null)
+                return Ok(new { status = 1, message = "Successfully Registered" });
+
+            return BadRequest(new { status = 0, message = "Error" });
+        }
+
+        [HttpPost("Login"), AllowAnonymous]
+        public IActionResult Login([FromBody] UserRequestDTO loginData)
+        {
+            if (HttpContext.Session.GetInt32("id") != null)
+                return BadRequest(new { message = "Already Logged In" });
+
+            var id = _userService.Login(loginData.Username, loginData.Password);
+
+            if (id != -1)
+            {
+                HttpContext.Session.SetInt32("id", id);
+
+                return Ok(new { status = 1, message = "Successfully Logged In" });
+            }
+
+            return BadRequest(new { status = 0, message = "Username or password is incorrect" });
+        }
+
         // GET: api/<UserController>
         [HttpGet]
         public ICollection<UserResponseDTO> GetAll()
@@ -44,13 +75,6 @@ namespace TS.API.Controllers
                 return NotFound();
 
             return Ok(_mapper.Map<UserResponseDTO>(userResponse));
-        }
-
-        // POST api/<UserController>
-        [HttpPost]
-        public void Post([FromBody] UserRequestDTO user)
-        {
-            _userService.Create(user.Username, user.Password);
         }
 
         // DELETE api/<UserController>/5

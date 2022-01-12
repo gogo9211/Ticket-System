@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,15 @@ namespace TS.API
             services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
             services.AddScoped<IUserService, UserService>();
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.Cookie.IsEssential = true;
+            });
+
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -69,7 +79,9 @@ namespace TS.API
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthorization().UseSession();
+
+            app.UseDeveloperExceptionPage();
 
             app.UseEndpoints(endpoints =>
             {

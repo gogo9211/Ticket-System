@@ -25,6 +25,6 @@ namespace TS.DAL.Entities
         [Required]
         public string Password { get; set; }
 
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; } 
     }
 }
