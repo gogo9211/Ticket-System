@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,16 +10,20 @@ using System.Threading.Tasks;
 using TS.BLL.Abstractions;
 using TS.DAL.Abstractions;
 using TS.DAL.Entities;
+using TS.DTO.Responses;
+using TS.API.Helpers;
 
 namespace TS.BLL.Services
 {
     public class UserService : IUserService
     {
         private IGenericRepository<User> _userRepository = null;
+        private readonly AppSettings _appSettings;
 
-        public UserService(IGenericRepository<User> userRepository)
+        public UserService(IGenericRepository<User> userRepository, IOptions<AppSettings> appSettings)
         {
             _userRepository = userRepository;
+            _appSettings = appSettings.Value;
         }
 
         public List<User> GetAll()
@@ -56,7 +61,7 @@ namespace TS.BLL.Services
             return true;
         }
 
-        public int Login(string username, string password)
+        public AuthenticationResponseDTO Login(string username, string password)
         {
             var users = GetAll();
 
@@ -65,38 +70,19 @@ namespace TS.BLL.Services
                     //return user.ID;
                     var token = GenerateJwtToken(user);
 
-                    return new AuthenticateResponse(user, token); // need to create AuthenticateResponse
-                    /*
-                    public class AuthenticateResponse
-                    {
-                        public int Id { get; set; }
-                        public string FirstName { get; set; }
-                        public string LastName { get; set; }
-                        public string Username { get; set; }
-                        public string Token { get; set; }
-
-
-                        public AuthenticateResponse(User user, string token)
-                        {
-                            Id = user.Id;
-                            FirstName = user.FirstName;
-                            LastName = user.LastName;
-                            Username = user.Username;
-                            Token = token;
-                        }
-                    }*/
+                    return new AuthenticationResponseDTO(user, token); // error
                 }
             }
 
-            return -1;
+            return null;
         }
 
         private string GenerateJwtToken(User user) {
-            // generate token that is valid for 7 days
+            // Generate token that is valid for 7 days.
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // error
             var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }), // error
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.ID.ToString()) }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TS.DAL.Entities;
+using TS.DTO.Responses;
 
 namespace TS.BLL.Abstractions
 {
@@ -16,6 +17,6 @@ namespace TS.BLL.Abstractions
 
         bool Delete(int id);
 
-        int Login(string username, string password);
+        AuthenticationResponseDTO Login(string username, string password);
     }
 }

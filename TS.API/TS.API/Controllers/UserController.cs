@@ -39,21 +39,14 @@ namespace TS.API.Controllers
         }
 
         [HttpPost("Login"), AllowAnonymous]
-        public IActionResult Login([FromBody] UserRequestDTO loginData) // need to rewrite this func
+        public IActionResult Login([FromBody] UserRequestDTO loginData)
         {
-            if (HttpContext.Session.GetInt32("id") != null)
-                return BadRequest(new { message = "Already Logged In" });
+            var response = _userService.Login(loginData.Username, loginData.Password);
 
-            var id = _userService.Login(loginData.Username, loginData.Password);
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
 
-            if (id != -1)
-            {
-                HttpContext.Session.SetInt32("id", id);
-
-                return Ok(new { status = 1, message = "Successfully Logged In" });
-            }
-
-            return BadRequest(new { status = 0, message = "Username or password is incorrect" });
+            return Ok(response);
         }
 
         // GET: api/<UserController>
