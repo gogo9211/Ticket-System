@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TS.API.Helpers;
 using TS.API.Mappings;
 using TS.BLL.Abstractions;
 using TS.BLL.Services;
@@ -36,17 +37,19 @@ namespace TS.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
             services.AddScoped<IUserService, UserService>();
 
-            services.AddDistributedMemoryCache();
+            /*services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
             {
                 options.Cookie.Name = "Session";
                 options.IdleTimeout = TimeSpan.FromSeconds(60);
                 options.Cookie.IsEssential = true;
-            });
+            });*/
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -79,9 +82,11 @@ namespace TS.API
 
             app.UseRouting();
 
-            app.UseAuthorization().UseSession();
+            app.UseAuthorization();//.UseSession();
 
             app.UseDeveloperExceptionPage();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

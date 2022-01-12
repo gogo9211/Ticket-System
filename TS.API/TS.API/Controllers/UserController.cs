@@ -39,7 +39,7 @@ namespace TS.API.Controllers
         }
 
         [HttpPost("Login"), AllowAnonymous]
-        public IActionResult Login([FromBody] UserRequestDTO loginData)
+        public IActionResult Login([FromBody] UserRequestDTO loginData) // need to rewrite this func
         {
             if (HttpContext.Session.GetInt32("id") != null)
                 return BadRequest(new { message = "Already Logged In" });
