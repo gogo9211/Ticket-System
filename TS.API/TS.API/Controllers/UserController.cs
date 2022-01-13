@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TS.BLL.Abstractions;
+using TS.DAL.Entities;
 using TS.DTO.Requests;
 using TS.DTO.Responses;
 
@@ -41,7 +42,7 @@ namespace TS.API.Controllers
         [HttpPost("Login"), AllowAnonymous]
         public IActionResult Login([FromBody] UserRequestDTO loginData)
         {
-            var token = _userService.Login(loginData.Username, loginData.Password);
+            string token = _userService.Login(loginData.Username, loginData.Password);
 
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new { status = 0, message = "Username or password is incorrect" });

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TS.BLL.Abstractions;
+using TS.DAL.Entities;
 using TS.DTO.Requests;
 using TS.DTO.Responses;
 
@@ -31,32 +32,20 @@ namespace TS.API.Controllers
         [HttpGet]
         public ICollection<TicketResponseDTO> GetAll()
         {
-            return null;
-            /*ICollection<DAL.Entities.Ticket> tickets = new List<DAL.Entities.Ticket>();
+            ICollection<DAL.Entities.Ticket> tickets = new List<DAL.Entities.Ticket>();
 
-            var userId = HttpContext.Session.GetInt32("id");
-
-            if (userId == null)
-                return _mapper.Map<List<TicketResponseDTO>>(tickets);
-
-            var user = _userService.GetById(userId.Value);
+            var user = (User)HttpContext.Items["User"];
 
             tickets = user.Tickets;
 
-            return _mapper.Map<List<TicketResponseDTO>>(tickets);*/
+            return _mapper.Map<List<TicketResponseDTO>>(tickets);
         }
 
         [Authorize]
         [HttpGet("{id}")]
         public ActionResult<TicketResponseDTO> GetById(int id)
         {
-            return Ok();
-            /*var userId = HttpContext.Session.GetInt32("id");
-
-            if (userId == null)
-                return NotFound();
-
-            var user = _userService.GetById(userId.Value);
+            var user = (User)HttpContext.Items["User"];
 
             foreach (var ticket in user.Tickets)
             {
@@ -64,7 +53,17 @@ namespace TS.API.Controllers
                     return _mapper.Map<TicketResponseDTO>(ticket);
             }
 
-            return NotFound();*/
+            return NotFound();
+        }
+
+        [Authorize]
+        [HttpPost("Create")]
+        public ActionResult<TicketResponseDTO> Create([FromBody] TicketResponseDTO ticketData) {
+            var user = (User)HttpContext.Items["User"];
+
+            // TODO: make it work
+
+            return Ok();
         }
     }
 }
