@@ -10,20 +10,18 @@ using System.Threading.Tasks;
 using TS.BLL.Abstractions;
 using TS.DAL.Abstractions;
 using TS.DAL.Entities;
-using TS.DTO.Responses;
-using TS.API.Helpers;
 
 namespace TS.BLL.Services
 {
     public class UserService : IUserService
     {
         private IGenericRepository<User> _userRepository = null;
-        private readonly AppSettings _appSettings;
+        //private readonly AppSettings _appSettings;
 
-        public UserService(IGenericRepository<User> userRepository, IOptions<AppSettings> appSettings)
+        public UserService(IGenericRepository<User> userRepository/*, IOptions<AppSettings> appSettings*/)
         {
             _userRepository = userRepository;
-            _appSettings = appSettings.Value;
+            //_appSettings = appSettings.Value;
         }
 
         public List<User> GetAll()
@@ -61,16 +59,13 @@ namespace TS.BLL.Services
             return true;
         }
 
-        public AuthenticationResponseDTO Login(string username, string password)
+        public string Login(string username, string password)
         {
             var users = GetAll();
 
             foreach (var user in users) {
                 if (user.Username == username && user.Password == password) {
-                    //return user.ID;
-                    var token = GenerateJwtToken(user);
-
-                    return new AuthenticationResponseDTO(user, token); // error
+                    return GenerateJwtToken(user);
                 }
             }
 
@@ -80,7 +75,8 @@ namespace TS.BLL.Services
         private string GenerateJwtToken(User user) {
             // Generate token that is valid for 7 days.
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // error
+            //var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes("0UDQ2IvtaZIwJr76Tx4dKORCrHjPMDU81oLLydqADwjm1s9Hsr");
             var tokenDescriptor = new SecurityTokenDescriptor {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.ID.ToString()) }),
                 Expires = DateTime.UtcNow.AddDays(7),

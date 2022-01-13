@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TS.BLL.Services;
+using TS.BLL.Abstractions;
 
 namespace TS.API.Helpers {
     public class JwtMiddleware {
@@ -18,7 +18,7 @@ namespace TS.API.Helpers {
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, UserService userService) {
+        public async Task Invoke(HttpContext context, IUserService userService) {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
@@ -27,7 +27,7 @@ namespace TS.API.Helpers {
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, UserService userService, string token) {
+        private void attachUserToContext(HttpContext context, IUserService userService, string token) {
             try {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);

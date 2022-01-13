@@ -41,12 +41,12 @@ namespace TS.API.Controllers
         [HttpPost("Login"), AllowAnonymous]
         public IActionResult Login([FromBody] UserRequestDTO loginData)
         {
-            var response = _userService.Login(loginData.Username, loginData.Password);
+            var token = _userService.Login(loginData.Username, loginData.Password);
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { status = 0, message = "Username or password is incorrect" });
 
-            return Ok(response);
+            return Ok(new { status = 1, username = loginData.Username, token = token });
         }
 
         // GET: api/<UserController>

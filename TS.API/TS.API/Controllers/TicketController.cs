@@ -27,10 +27,12 @@ namespace TS.API.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public ICollection<TicketResponseDTO> GetAll()
         {
-            ICollection<DAL.Entities.Ticket> tickets = new List<DAL.Entities.Ticket>();
+            return null;
+            /*ICollection<DAL.Entities.Ticket> tickets = new List<DAL.Entities.Ticket>();
 
             var userId = HttpContext.Session.GetInt32("id");
 
@@ -41,13 +43,15 @@ namespace TS.API.Controllers
 
             tickets = user.Tickets;
 
-            return _mapper.Map<List<TicketResponseDTO>>(tickets);
+            return _mapper.Map<List<TicketResponseDTO>>(tickets);*/
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<TicketResponseDTO> GetById(int id)
         {
-            var userId = HttpContext.Session.GetInt32("id");
+            return Ok();
+            /*var userId = HttpContext.Session.GetInt32("id");
 
             if (userId == null)
                 return NotFound();
@@ -60,7 +64,7 @@ namespace TS.API.Controllers
                     return _mapper.Map<TicketResponseDTO>(ticket);
             }
 
-            return NotFound();
+            return NotFound();*/
         }
     }
 }
