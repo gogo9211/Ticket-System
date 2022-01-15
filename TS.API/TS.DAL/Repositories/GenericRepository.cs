@@ -20,9 +20,9 @@ namespace TS.DAL.Repositories
             table = _context.Set<T>();
         }
 
-        public GenericRepository(DatabaseContext _context)
+        public GenericRepository(DatabaseContext context)
         {
-            this._context = _context;
+            _context = context;
             table = _context.Set<T>();
         }
 

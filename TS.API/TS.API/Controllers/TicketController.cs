@@ -19,20 +19,20 @@ namespace TS.API.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
 
-        public TicketController(IUserService userService, IMapper mapper)
+        public TicketController(IMapper mapper, ITicketService ticketService)
         {
-            _userService = userService;
             _mapper = mapper;
+            _ticketService = ticketService;
         }
 
         [Authorize]
         [HttpGet]
         public ICollection<TicketResponseDTO> GetAll()
         {
-            ICollection<DAL.Entities.Ticket> tickets = new List<DAL.Entities.Ticket>();
+            ICollection<Ticket> tickets;
 
             var user = (User)HttpContext.Items["User"];
 
@@ -58,12 +58,16 @@ namespace TS.API.Controllers
 
         [Authorize]
         [HttpPost("Create")]
-        public ActionResult<TicketResponseDTO> Create([FromBody] TicketResponseDTO ticketData) {
+        public IActionResult Create([FromBody] TicketRequestDTO ticketData)
+        {
             var user = (User)HttpContext.Items["User"];
 
-            // TODO: make it work
+            var ticket = _ticketService.Create(user, ticketData.Title, ticketData.Description);
 
-            return Ok();
+            if (ticket != null)
+                return Ok(new { status = 1, message = "Successfully Created Ticket" });
+
+            return BadRequest(new { status = 0, message = "Error" });
         }
     }
 }

@@ -16,12 +16,10 @@ namespace TS.BLL.Services
     public class UserService : IUserService
     {
         private IGenericRepository<User> _userRepository = null;
-        //private readonly AppSettings _appSettings;
 
-        public UserService(IGenericRepository<User> userRepository/*, IOptions<AppSettings> appSettings*/)
+        public UserService(IGenericRepository<User> userRepository)
         {
             _userRepository = userRepository;
-            //_appSettings = appSettings.Value;
         }
 
         public List<User> GetAll()
@@ -63,8 +61,10 @@ namespace TS.BLL.Services
         {
             var users = GetAll();
 
-            foreach (var user in users) {
-                if (user.Username == username && user.Password == password) {
+            foreach (var user in users)
+            {
+                if (user.Username == username && user.Password == password)
+                {
                     return GenerateJwtToken(user);
                 }
             }
@@ -72,17 +72,22 @@ namespace TS.BLL.Services
             return null;
         }
 
-        private string GenerateJwtToken(User user) {
-            // Generate token that is valid for 7 days.
+        private string GenerateJwtToken(User user)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var key = Encoding.ASCII.GetBytes("0UDQ2IvtaZIwJr76Tx4dKORCrHjPMDU81oLLydqADwjm1s9Hsr");
-            var tokenDescriptor = new SecurityTokenDescriptor {
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.ID.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7),
+
+                Expires = DateTime.UtcNow.AddDays(1),
+
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
             return tokenHandler.WriteToken(token);
         }
     }

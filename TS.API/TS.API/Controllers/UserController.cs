@@ -28,7 +28,7 @@ namespace TS.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("Register"), AllowAnonymous]
+        [HttpPost("Register")]
         public IActionResult Register([FromBody] UserRequestDTO registrationData)
         {
             var user = _userService.Create(registrationData.Username, registrationData.Password); //we need sanity checks in create later
@@ -39,7 +39,7 @@ namespace TS.API.Controllers
             return BadRequest(new { status = 0, message = "Error" });
         }
 
-        [HttpPost("Login"), AllowAnonymous]
+        [HttpPost("Login")]
         public IActionResult Login([FromBody] UserRequestDTO loginData)
         {
             string token = _userService.Login(loginData.Username, loginData.Password);
@@ -77,11 +77,5 @@ namespace TS.API.Controllers
         {
             _userService.Delete(id);
         }
-
-        // PUT api/<UserController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
     }
 }

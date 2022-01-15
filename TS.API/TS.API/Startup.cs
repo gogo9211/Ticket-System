@@ -40,16 +40,9 @@ namespace TS.API
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
+            services.AddScoped<IGenericRepository<Ticket>, GenericRepository<Ticket>>();
             services.AddScoped<IUserService, UserService>();
-
-            /*services.AddDistributedMemoryCache();
-
-            services.AddSession(options =>
-            {
-                options.Cookie.Name = "Session";
-                options.IdleTimeout = TimeSpan.FromSeconds(60);
-                options.Cookie.IsEssential = true;
-            });*/
+            services.AddScoped<ITicketService, TicketService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -65,6 +58,25 @@ namespace TS.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TS.API", Version = "v1" });
+
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+                c.AddSecurityDefinition("Bearer", securitySchema);
+
+                var securityRequirement = new OpenApiSecurityRequirement();
+                securityRequirement.Add(securitySchema, new[] { "Bearer" });
+                c.AddSecurityRequirement(securityRequirement);
             });
         }
 
@@ -82,7 +94,7 @@ namespace TS.API
 
             app.UseRouting();
 
-            app.UseAuthorization();//.UseSession();
+            app.UseAuthorization();
 
             app.UseDeveloperExceptionPage();
 
