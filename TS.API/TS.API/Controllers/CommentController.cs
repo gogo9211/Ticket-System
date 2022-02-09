@@ -17,14 +17,14 @@ namespace TS.API.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
-        private readonly ITicketService _TicketService;
+        private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
 
-        public CommentController(IMapper mapper, ICommentService commentService, ITicketService TicketService)
+        public CommentController(IMapper mapper, ICommentService commentService, ITicketService ticketService)
         {
             _mapper = mapper;
             _commentService = commentService;
-            _TicketService = TicketService;
+            _ticketService = ticketService;
         }
 
         [Authorize]
@@ -33,7 +33,7 @@ namespace TS.API.Controllers
         {
             var user = (User)HttpContext.Items["User"];
 
-            var ticket = _TicketService.GetById(commentData.TicketID);
+            var ticket = _ticketService.GetById(commentData.TicketID);
 
             if (ticket == null || ticket.User.ID != user.ID)
                 return BadRequest(new { status = 0, message = "Invalid Ticket ID" });
