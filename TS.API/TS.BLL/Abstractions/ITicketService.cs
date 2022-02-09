@@ -12,5 +12,9 @@ namespace TS.BLL.Abstractions
         List<Ticket> GetAll();
 
         Ticket Create(User user, string title, string description);
+
+        Ticket GetById(int id);
+
+        bool Delete(int id);
     }
 }

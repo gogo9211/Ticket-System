@@ -12,6 +12,8 @@ namespace TS.DAL.DataContext
     {
         public string ConnectionString { get; set; }
 
+        public string Secret { get; set; }
+
         public AppConfiguration()
         {
             var configBuilder = new ConfigurationBuilder();
@@ -20,9 +22,12 @@ namespace TS.DAL.DataContext
             configBuilder.AddJsonFile(path, false);
 
             var root = configBuilder.Build();
+
             var appSetting = root.GetSection("ConnectionStrings:Database");
+            var secret = root.GetSection("AppSettings:Secret");
 
             ConnectionString = appSetting.Value;
+            Secret = secret.Value;
         }
     }
 }

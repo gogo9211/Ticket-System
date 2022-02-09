@@ -1,25 +1,26 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TS.BLL.Abstractions;
 using TS.DAL.Abstractions;
 using TS.DAL.Entities;
+using TS.DAL.DataContext;
+using TS.BLL.JWT;
 
 namespace TS.BLL.Services
 {
     public class UserService : IUserService
     {
         private IGenericRepository<User> _userRepository = null;
+        private AppConfiguration configuration;
 
         public UserService(IGenericRepository<User> userRepository)
         {
             _userRepository = userRepository;
+
+            configuration = new AppConfiguration();
         }
 
         public List<User> GetAll()
@@ -46,12 +47,27 @@ namespace TS.BLL.Services
             return user;
         }
 
-        public bool Delete(int id)
+        public bool UserExist(string username)
         {
-            if (GetById(id) == null)
+            var users = GetAll();
+
+            foreach (var user in users)
+                if (user.Username == username)
+                    return true;
+
+            return false;
+        }
+
+        public bool Disable(int id)
+        {
+            var user = GetById(id);
+
+            if (user == null)
                 return false;
 
-            _userRepository.Delete(id);
+            user.Disabled = true;
+
+            _userRepository.Update(user);
             _userRepository.Save();
 
             return true;
@@ -65,30 +81,14 @@ namespace TS.BLL.Services
             {
                 if (user.Username == username && user.Password == password)
                 {
-                    return GenerateJwtToken(user);
+                    if (user.Disabled)
+                        return null;
+
+                    return JWTService.GenerateJwtToken(user, configuration);
                 }
             }
 
             return null;
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("0UDQ2IvtaZIwJr76Tx4dKORCrHjPMDU81oLLydqADwjm1s9Hsr");
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.ID.ToString()) }),
-
-                Expires = DateTime.UtcNow.AddDays(1),
-
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
         }
     }
 }

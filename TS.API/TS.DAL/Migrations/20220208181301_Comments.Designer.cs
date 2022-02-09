@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TS.DAL;
 
 namespace TS.DAL.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220208181301_Comments")]
+    partial class Comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,13 +32,15 @@ namespace TS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("CreatorID")
+                        .HasColumnType("int");
 
                     b.Property<int?>("TicketID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("CreatorID");
 
                     b.HasIndex("TicketID");
 
@@ -75,9 +79,6 @@ namespace TS.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Disabled")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -93,9 +94,15 @@ namespace TS.DAL.Migrations
 
             modelBuilder.Entity("TS.DAL.Entities.Comment", b =>
                 {
+                    b.HasOne("TS.DAL.Entities.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorID");
+
                     b.HasOne("TS.DAL.Entities.Ticket", "Ticket")
                         .WithMany("Comments")
                         .HasForeignKey("TicketID");
+
+                    b.Navigation("Creator");
 
                     b.Navigation("Ticket");
                 });

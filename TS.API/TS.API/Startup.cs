@@ -41,8 +41,11 @@ namespace TS.API
 
             services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
             services.AddScoped<IGenericRepository<Ticket>, GenericRepository<Ticket>>();
+            services.AddScoped<IGenericRepository<Comment>, GenericRepository<Comment>>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {

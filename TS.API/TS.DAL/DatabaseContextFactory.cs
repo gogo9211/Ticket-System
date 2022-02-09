@@ -17,6 +17,7 @@ namespace TS.DAL
 
             var opsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
 
+            opsBuilder.EnableSensitiveDataLogging();
             opsBuilder.UseSqlServer(appConfig.ConnectionString);
 
             return new DatabaseContext(opsBuilder.Options);

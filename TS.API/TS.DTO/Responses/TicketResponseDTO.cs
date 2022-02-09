@@ -11,5 +11,7 @@ namespace TS.DTO.Responses
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public ICollection<CommentResponseDTO> Comments { get; set; }
     }
 }

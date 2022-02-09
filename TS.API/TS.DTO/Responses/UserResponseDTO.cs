@@ -11,6 +11,8 @@ namespace TS.DTO.Responses
     {
         public string Username { get; set; }
 
+        public bool Disabled { get; set; }
+
         public ICollection<TicketResponseDTO> Tickets { get; set; }
     }
 }

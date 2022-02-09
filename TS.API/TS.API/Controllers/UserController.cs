@@ -31,7 +31,10 @@ namespace TS.API.Controllers
         [HttpPost("Register")]
         public IActionResult Register([FromBody] UserRequestDTO registrationData)
         {
-            var user = _userService.Create(registrationData.Username, registrationData.Password); //we need sanity checks in create later
+            if (_userService.UserExist(registrationData.Username))
+                return BadRequest(new { status = 0, message = "Username Already Exist" });
+
+            var user = _userService.Create(registrationData.Username, registrationData.Password);
 
             if (user != null)
                 return Ok(new { status = 1, message = "Successfully Registered" });
@@ -45,7 +48,7 @@ namespace TS.API.Controllers
             string token = _userService.Login(loginData.Username, loginData.Password);
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new { status = 0, message = "Username or password is incorrect" });
+                return BadRequest(new { status = 0, message = "Username or Password is Incorrect" });
 
             return Ok(new { status = 1, username = loginData.Username, token = token });
         }
@@ -59,23 +62,14 @@ namespace TS.API.Controllers
             return _mapper.Map<List<UserResponseDTO>>(userResponse);
         }
 
-        // GET api/<UserController>/5
-        [HttpGet("{id}")]
-        public ActionResult<UserResponseDTO> Get(int id)
-        {
-            var userResponse = _userService.GetById(id);
-
-            if (userResponse == null)
-                return NotFound();
-
-            return Ok(_mapper.Map<UserResponseDTO>(userResponse));
-        }
-
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Disable(int id)
         {
-            _userService.Delete(id);
+            if (_userService.Disable(id))
+                return Ok(new { status = 1, message = "Successfully Disabled User" });
+
+            return BadRequest(new { status = 0, message = "Can't Disable This User" });
         }
     }
 }

@@ -20,12 +20,14 @@ namespace TS.API.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
+        private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
 
-        public TicketController(IMapper mapper, ITicketService ticketService)
+        public TicketController(IMapper mapper, ITicketService ticketService, ICommentService commentService)
         {
             _mapper = mapper;
             _ticketService = ticketService;
+            _commentService = commentService;
         }
 
         [Authorize]
@@ -48,10 +50,8 @@ namespace TS.API.Controllers
             var user = (User)HttpContext.Items["User"];
 
             foreach (var ticket in user.Tickets)
-            {
                 if (ticket.ID == id)
                     return _mapper.Map<TicketResponseDTO>(ticket);
-            }
 
             return NotFound();
         }
@@ -66,6 +66,25 @@ namespace TS.API.Controllers
 
             if (ticket != null)
                 return Ok(new { status = 1, message = "Successfully Created Ticket" });
+
+            return BadRequest(new { status = 0, message = "Error" });
+        }
+        
+        [Authorize]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var user = (User)HttpContext.Items["User"];
+
+            var ticket = _ticketService.GetById(id);
+
+            if (ticket == null || ticket.User.ID != user.ID)
+                return BadRequest(new { status = 0, message = "Can't Delete This Ticket" });
+
+            _commentService.DeleteTicketComments(ticket);
+
+            if (_ticketService.Delete(id))
+                return Ok(new { status = 1, message = "Successfully Deleted Ticket" });
 
             return BadRequest(new { status = 0, message = "Error" });
         }

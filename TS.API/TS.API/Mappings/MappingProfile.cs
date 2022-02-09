@@ -17,6 +17,9 @@ namespace TS.API.Mappings
 
             CreateMap<Ticket, TicketResponseDTO>();
             CreateMap<TicketResponseDTO, Ticket>();
+
+            CreateMap<Comment, CommentResponseDTO>();
+            CreateMap<CommentResponseDTO, Comment>();
         }
     }
 }

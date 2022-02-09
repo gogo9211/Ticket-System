@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,26 +8,17 @@ using System.Threading.Tasks;
 
 namespace TS.DAL.Entities
 {
-    public class User
+    public class Comment
     {
-        public User()
-        {
-            Tickets = new List<Ticket>();
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         [Required]
-        public string Username { get; set; }
+        public string Content { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        public virtual Ticket Ticket { get; set; }
 
-        [DefaultValue(false)]
-        public bool Disabled { get; set; }
-
-        public virtual ICollection<Ticket> Tickets { get; set; } 
+        public string CreatorName { get; set; }
     }
 }

@@ -15,7 +15,9 @@ namespace TS.BLL.Abstractions
 
         User Create(string username, string password);
 
-        bool Delete(int id);
+        bool UserExist(string username);
+
+        bool Disable(int id);
 
         string Login(string username, string password);
     }

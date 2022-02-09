@@ -41,5 +41,21 @@ namespace TS.BLL.Services
 
             return ticket;
         }
+
+        public Ticket GetById(int id)
+        {
+            return _ticketRepository.GetById(id);
+        }
+
+        public bool Delete(int id)
+        {
+            if (GetById(id) == null)
+                return false;
+
+            _ticketRepository.Delete(id);
+            _ticketRepository.Save();
+
+            return true;
+        }
     }
 }
