@@ -22,10 +22,13 @@ namespace TS.BLL.Services
 
         public Comment Create(Ticket ticket, User creator, string content)
         {
+            if (creator.ID == ticket.User.ID)
+                creator = ticket.User;
+
             Comment comment = new Comment();
 
             comment.Content = content;
-            comment.CreatorName = creator.Username;
+            comment.Creator = creator;
             comment.Ticket = ticket;
 
             ticket.Comments.Add(comment);
@@ -36,15 +39,22 @@ namespace TS.BLL.Services
             return comment;
         }
 
-        public void DeleteTicketComments(Ticket ticket)
+        public Comment GetById(int id)
         {
-            var comments = ticket.Comments;
+            return _commentRepository.GetById(id);
+        }
 
-            foreach (var comment in comments)
-            {
-                _commentRepository.Delete(comment.ID);
-                _commentRepository.Save();
-            }
+        public bool Delete(int id)
+        {
+            var comment = GetById(id);
+
+            if (comment == null)
+                return false;
+
+            _commentRepository.Delete(comment);
+            _commentRepository.Save();
+
+            return true;
         }
     }
 }

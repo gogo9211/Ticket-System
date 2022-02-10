@@ -19,6 +19,6 @@ namespace TS.DAL.Entities
 
         public virtual Ticket Ticket { get; set; }
 
-        public string CreatorName { get; set; }
+        public virtual User Creator { get; set; }
     }
 }

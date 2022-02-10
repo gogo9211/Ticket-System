@@ -11,6 +11,8 @@ namespace TS.BLL.Abstractions
     {
         Comment Create(Ticket ticket, User creator, string content);
 
-        void DeleteTicketComments(Ticket ticket);
+        Comment GetById(int id);
+
+        bool Delete(int id);
     }
 }

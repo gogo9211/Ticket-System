@@ -47,10 +47,10 @@ namespace TS.DAL.Repositories
             _context.Entry(obj).State = EntityState.Modified;
         }
 
-        public void Delete(object id)
+        public void Delete(T obj)
         {
-            T existing = table.Find(id);
-            table.Remove(existing);
+            _context.Entry(obj).State = EntityState.Deleted;
+            table.Remove(obj);
         }
 
         public void Save()

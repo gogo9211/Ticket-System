@@ -49,10 +49,20 @@ namespace TS.BLL.Services
 
         public bool Delete(int id)
         {
-            if (GetById(id) == null)
+            var ticket = GetById(id);
+
+            if (ticket == null)
                 return false;
 
-            _ticketRepository.Delete(id);
+            _ticketRepository.Delete(ticket);
+            _ticketRepository.Save();
+
+            return true;
+        }
+
+        public bool Delete(Ticket ticket)
+        {
+            _ticketRepository.Delete(ticket);
             _ticketRepository.Save();
 
             return true;

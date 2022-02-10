@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TS.DAL;
 
 namespace TS.DAL.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220210071508_Creator3")]
+    partial class Creator3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,16 +38,11 @@ namespace TS.DAL.Migrations
                     b.Property<int?>("TicketID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TicketID1")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("CreatorID");
 
                     b.HasIndex("TicketID");
-
-                    b.HasIndex("TicketID1");
 
                     b.ToTable("Comments");
                 });
@@ -104,14 +101,9 @@ namespace TS.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("CreatorID");
 
-                    b.HasOne("TS.DAL.Entities.Ticket", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("TicketID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("TS.DAL.Entities.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketID1");
+                        .WithMany("Comments")
+                        .HasForeignKey("TicketID");
 
                     b.Navigation("Creator");
 

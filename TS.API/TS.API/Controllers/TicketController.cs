@@ -81,9 +81,7 @@ namespace TS.API.Controllers
             if (ticket == null || ticket.User.ID != user.ID)
                 return BadRequest(new { status = 0, message = "Can't Delete This Ticket" });
 
-            _commentService.DeleteTicketComments(ticket);
-
-            if (_ticketService.Delete(id))
+            if (_ticketService.Delete(ticket))
                 return Ok(new { status = 1, message = "Successfully Deleted Ticket" });
 
             return BadRequest(new { status = 0, message = "Error" });

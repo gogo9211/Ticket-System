@@ -16,5 +16,7 @@ namespace TS.BLL.Abstractions
         Ticket GetById(int id);
 
         bool Delete(int id);
+
+        bool Delete(Ticket ticket);
     }
 }

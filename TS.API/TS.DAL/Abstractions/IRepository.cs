@@ -17,7 +17,7 @@ namespace TS.DAL.Abstractions
 
         void Update(T obj);
 
-        void Delete(object id);
+        void Delete(T obj);
 
         void Save();
     }

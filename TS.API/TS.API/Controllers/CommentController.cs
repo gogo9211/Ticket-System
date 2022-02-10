@@ -45,5 +45,22 @@ namespace TS.API.Controllers
 
             return BadRequest(new { status = 0, message = "Error" });
         }
+
+        [Authorize]
+        [HttpDelete("Delete")]
+        public IActionResult Delete(int id)
+        {
+            var user = (User)HttpContext.Items["User"];
+
+            var comment = _commentService.GetById(id);
+
+            if (comment == null || comment.Creator.ID != user.ID)
+                return BadRequest(new { status = 0, message = "Invalid Comment ID" });
+
+            if (_commentService.Delete(comment.ID))
+                return Ok(new { status = 1, message = "Successfully Deleted Comment" });
+
+            return BadRequest(new { status = 0, message = "Error" });
+        }
     }
 }

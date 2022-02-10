@@ -9,7 +9,5 @@ namespace TS.DTO.Responses
     public class CommentResponseDTO : BaseResponseDTO
     {
         public string Content { get; set; }
-
-        public string CreatorName { get; set; }
     }
 }

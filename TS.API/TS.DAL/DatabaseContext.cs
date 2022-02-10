@@ -33,5 +33,15 @@ namespace TS.DAL
         public DbSet<Ticket> Tickets { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Ticket>()
+              .HasMany(b => b.Comments)
+              .WithOne()
+              .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
